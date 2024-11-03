@@ -1,0 +1,11 @@
+.LandingPage {
+  text-align: center;
+  background-color: beige;
+}
+
+.GameSelection {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
