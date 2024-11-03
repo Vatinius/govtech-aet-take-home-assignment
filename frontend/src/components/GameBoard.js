@@ -8,6 +8,7 @@ const GameBoard = ({ sessionId, player }) => {
   const [gameSession, setGameSession] = useState(null);
   const [statusMessage, setStatusMessage] = useState('Game in progress');
   const [preferredTile, setPreferredTile] = useState('');
+  const [inputPosition, setInputPosition] = useState('');
 
   const fetchGameSession = async () => {
     try {
@@ -44,7 +45,7 @@ const GameBoard = ({ sessionId, player }) => {
     // Polling to update the board every few seconds
     const interval = setInterval(() => {
       fetchGameSession();
-    }, 2000);
+    }, 1000);
 
     return () => clearInterval(interval);
   }, []);
@@ -63,6 +64,21 @@ const GameBoard = ({ sessionId, player }) => {
     }
   };
 
+  const handleSubmit = async () => {
+    const index = parseInt(inputPosition) - 1;
+    if (isNaN(index) || index < 0 || index > 8) {
+      alert('Please enter a valid tile number (1-9).');
+      return;
+    }
+    if (board[index] || !gameSession.isActive || isLoading) {
+      alert('This tile is already taken or the game is over.');
+      return;
+    }
+
+    await handleClick(index);
+    setInputPosition('');
+  };
+
   return (
     <>
       <div>
@@ -70,28 +86,65 @@ const GameBoard = ({ sessionId, player }) => {
           {statusMessage}
           <p>Session ID: {sessionId}</p>
           <p>Your Character: {player}</p>
-          <p>How to play: Click a square you would like to occupy. If you occupy 3 sqares in a row, you win!</p>
+          <p>How to play: Click a square you would like to occupy. If you occupy 3 squares in a row, you win!</p>
         </div>
-        <div role="grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 100px)', gridGap: '5px', marginTop: '20px' }}>
-          {board.map((cell, index) => (
-            <button
-              key={index}
-              role="gridcell"
-              aria-label={`Cell ${index + 1}, ${cell ? `occupied by ${cell}` : `${index + 1}`}`}
-              onClick={() => handleClick(index)}
-              disabled={!!cell || !gameSession?.isActive || isLoading}
-              style={{ width: '100px', height: '100px', fontSize: '2em' }}
-            >
-              {cell}
-            </button>
+        <div
+        role="grid"
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 100px)',
+          gridGap: '5px',
+          marginTop: '20px',
+        }}
+      >
+        {board.map((cell, index) => (
+          <button
+            key={index}
+            role="gridcell"
+            aria-label={`Cell ${index + 1}, ${cell ? `occupied by ${cell}` : 'empty'}`}
+            onClick={() => handleClick(index)}
+            disabled={!!cell || !gameSession?.isActive || isLoading}
+            style={{
+              width: '100px',
+              height: '100px',
+              fontSize: '2em',
+              position: 'relative',
+            }}
+          >
+            {cell}
+            {!cell && (
+              <span
+                style={{
+                  position: 'absolute',
+                  top: '5px',
+                  right: '5px',
+                  fontSize: '0.8em',
+                  color: 'rgba(0, 0, 0, 0.5)',
+                }}
+              >
+                {index + 1}
+              </span>
+            )}
+          </button>
           ))}
         </div>
       </div>
-      <div style={{ marginTop: '50px' }}>
-        <h2>Alternatively For of Input:</h2>
-        <p>Enter the number of the square you wish to occupy</p>
-        <input type="text" placeholder="1 to 9 accepted" />
-        <button>Submit</button>
+      <div style={{ marginTop: '20px' }}>
+        <p>Alternatively, enter the tile number you want to occupy below</p>
+        <label htmlFor="tile-input">Enter tile number (1-9): </label>
+        <input
+          id="tile-input"
+          type="number"
+          min="1"
+          max="9"
+          value={inputPosition}
+          onChange={(e) => setInputPosition(e.target.value)}
+          disabled={!gameSession?.isActive || isLoading}
+          style={{ width: '200px' }}
+        />
+        <button onClick={handleSubmit} disabled={!gameSession?.isActive || isLoading}>
+          Confirm Move
+        </button>
       </div>
       <div style={{ marginTop: '50px' }}>
         <Button href="/home">Back to Home</Button>

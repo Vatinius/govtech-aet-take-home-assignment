@@ -20,7 +20,7 @@ export default function LandingPage() {
             <Card.Text>
               Join a game or create a new game session of Tic Tac Toe!
             </Card.Text>
-            <Button variant="primary" href="/GameOne">Play</Button>
+            <Button variant="primary" href="/GameMenu">Play</Button>
           </Card.Body>
         </Card>
       </div>

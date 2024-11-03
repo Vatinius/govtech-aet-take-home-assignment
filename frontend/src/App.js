@@ -11,7 +11,7 @@ function App() {
         <Routes>
           <Route index element={<LandingPage />} />
           <Route path='/home' element={<LandingPage />} />
-          <Route path='/GameOne' element={<GameMenu />} />
+          <Route path='/GameMenu' element={<GameMenu />} />
         </Routes>
       </BrowserRouter>
     </div>
