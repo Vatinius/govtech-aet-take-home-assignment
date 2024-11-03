@@ -10,7 +10,6 @@ router.get('/status', (req, res) => {
 // Create a new game session
 router.post('/create', async (req, res) => {
   try {
-    res.send('Creating a new game session');
     const { sessionName, players } = req.body;
     const gameSession = new GameSession({ sessionName, players });
     await gameSession.save();
@@ -62,11 +61,11 @@ router.post('/move', async (req, res) => {
   }
 });
 
-// Retrieve past games
-router.get('/past-games', async (req, res) => {
+//Get game data
+router.get('/game-data/:id', async (req, res) => {
   try {
-    const games = await GameSession.find({ isActive: false });
-    res.json(games);
+    const game = await GameSession.findById(req.params.id);
+    res.json(game);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
