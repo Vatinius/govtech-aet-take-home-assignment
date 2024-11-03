@@ -2,20 +2,15 @@ const express = require('express');
 const router = express.Router();
 const GameSession = require('../models/GameSession');
 
-router.get('/start', (req, res) => {
-  console.log('Game session started');
-  res.send('Game session started');
-});
-
-router.get('/end', (req, res) => {
-  console.log('Game session ended');
-  res.send('Game session ended');
+router.get('/status', (req, res) => {
+  console.log('API is functioning');
+  res.send('API is functioning');
 });
 
 // Create a new game session
 router.post('/create', async (req, res) => {
   try {
-    res.get('Creating a new game session');
+    res.send('Creating a new game session');
     const { sessionName, players } = req.body;
     const gameSession = new GameSession({ sessionName, players });
     await gameSession.save();
